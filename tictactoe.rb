@@ -1,4 +1,6 @@
 class TicTacToe
+  attr_reader :action_size
+
   def initialize
     @rows = 3
     @cols = 3
@@ -61,7 +63,10 @@ class TicTacToe
   def get_opponent(player) = -player
 
   def change_perspective(state, player)
-    state.map {|i| i * player}
+    state_ = state.map {|r| r.map(&:clone)}
+    state_.each_with_index do |row, r|
+      state_[r] = row.map {|i| i * player}
+    end
   end
 
   def print_board(state, title, p1, p2)
