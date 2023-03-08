@@ -5,20 +5,24 @@ class TicTacToe
     @action_size = @rows * @cols
   end
 
-  def get_initial_state
-    Array.new(@rows) { Array.new(@cols) {0}}
+  def get_initial_state 
+    Array.new(@rows){ Array.new(@cols) {0}}
   end
 
   def get_next_state(state, action, player)
     row = action / @cols 
     col = action % @cols 
     state[row][col] = player 
-    return state 
+    return state  
   end 
 
   def get_legal_moves(state)
     state.flatten.map {|s| s === 0}
   end 
+
+  def get_diagonals(state, indices)
+    state.flatten.reject.with_index { !indices.include? _2}
+  end
 
   def check_win(state, action) 
     row = action / @cols 
@@ -27,7 +31,9 @@ class TicTacToe
     is_row_connected = state[row].sum === player * @rows 
     is_col_connected = state.transpose[col].sum === player * @cols
     # TODO Check diagonals 
-    return is_row_connected || is_col_connected
+    is_ldiag_connected = get_diagonals(state, [0, 4, 8]).sum === player * @cols 
+    is_rdiag_connected = get_diagonals(state, [2, 4, 6]).sum === player * @cols
+    return is_row_connected || is_col_connected || is_ldiag_connected || is_rdiag_connected
   end 
 
   def check_gameover(state, action)
