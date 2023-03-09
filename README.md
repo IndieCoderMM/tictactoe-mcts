@@ -1,11 +1,13 @@
 # Tictactoe - MCTS 
 
-This Tictactoe engine uses Monte Carlo Tree Search algorithm to find the best move. The algorithm builds a game tree and simulates many random games to evaluate the possible outcomes.
+This Tictactoe engine uses Monte Carlo Tree Search algorithm to find the best move. The algorithm builds a game tree and simulates many random games to evaluate the possible outcomes, which are then used to guess the optimal play. 
+
+This tree search can be used with reinforcement learning to improve AI decision making process. MCTS has been used by Google Deepmind's AI systems like Alpha Go/Zero which can play the board game GO at a superhuman level.
 
 
 ## Screenshots
-<img src="demo_vsai.gif" width="40%" title="Player vs AI" >
-<img src="demo_sim.gif" width="40%" title="AI vs AI" >
+<img src="demo_vsai.gif" width="60%" title="Player vs AI" >
+<img src="demo_sim.gif" width="60%" title="AI vs AI" >
 
 
 ## Features
@@ -19,7 +21,7 @@ This Tictactoe engine uses Monte Carlo Tree Search algorithm to find the best mo
 
 ## Algorithm
 
-MCTS uses random simulations and tree search to explore the search space. The algorithm collects data from results and guesses the best move. The algorithm has to be run multiple times to get the optimal guess. It's usually controlled by a **run time** or **depth** variable. The longer or the more loops it runs, it gives the best output.
+MCTS uses random simulations and tree search to explore the search space. The algorithm collects data from results and guesses the best move. The algorithm has to be run multiple times to get the optimal guess. It's usually controlled by a **run time** or **depth** variable. The longer or the more loops it runs, the better the output.
 
 The output is a probability distribution of actions. As in the case of **3x3** Tictactoe board, it would be like this: 
 
