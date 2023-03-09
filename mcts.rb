@@ -19,7 +19,7 @@ class MCTS
         # Selecting the next node to expand
         # if node has no legal moves and have children select next
         # ! Selection never begin
-        puts('node selected!')
+        # puts('node selected!')
       end
       
       value, is_gameover = @game.check_gameover(node.state, node.action_taken)
@@ -27,7 +27,7 @@ class MCTS
 
       unless is_gameover
         node = node.expand
-        puts "Expanded: #{node}"
+        # puts "Expanded: #{node}"
         value = node.simulate
       end
 
@@ -37,15 +37,10 @@ class MCTS
     action_probs = Array.new(@game.action_size).fill(0)
 
     root.children.each do |child|
-      puts "Visits #{child.visits}"
+      # puts "Visits #{child.visits}"
       action_probs[child.action_taken] = child.visits
     end
-    puts "Probs: #{action_probs.to_s}"
-    sum = action_probs.sum
-    (0...action_probs.length).each do |i|
-      action_probs[i] = action_probs[i].to_f / sum
-    end
-
-    action_probs
+    # puts "Probs: #{action_probs.to_s}"
+    action_probs.map {|p| p.to_f/action_probs.sum}
   end
 end

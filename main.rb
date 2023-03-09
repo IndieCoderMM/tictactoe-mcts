@@ -1,56 +1,83 @@
+require 'optparse'
 require './tictactoe'
 require './mcts'
 
-tictactoe = TicTacToe.new
+options = {}
+
+parser = OptionParser.new do |parser|
+  parser.on("-m", "--mode MODE", "Choose Mode (vsai, computer)")
+  parser.on("-l", "--level AI_LEVEL", "Choose AI level (1..1000)")
+
+  parser.on("-h", "--help", "Prints this help") do
+    puts parser 
+    exit 
+  end
+end
+
+parser.parse!(into: options)
+
+P1 = '😃'
+P2 = '😈'
+p1_score = 0
+p2_score = 0
+match_no = 1
+mode = options[:mode] || 'vsai'
+level = options[:level]&.to_i || 1000
+level = [1, level, 1000].sort[1]
+
+
+game = TicTacToe.new
+state = game.get_initial_state
 player = 1
-p1_avatar = '😃'
-p2_avatar = '😈'
-state = tictactoe.get_initial_state
 
-args = { C: 1.41, num_searches: 1000 }
+args = { C: 1.41, num_searches: level }
+mcts = MCTS.new(game, args)
 
-mcts = MCTS.new(tictactoe, args)
+game.print_board(state, P1, P2, p1_score, p2_score, match_no)
 
 loop do
-  tictactoe.print_board(state, 'Tictactoe Master', p1_avatar, p2_avatar)
-
-  if player === 1
-    legal_moves = tictactoe.get_legal_moves(state)
+  if player === 1 && mode === "vsai"
+    legal_moves = game.get_legal_moves(state)
     puts 'Moves: (1..9); Q: Exit;'
     print 'Enter your move => '
-    action = gets.chomp.to_i - 1
-
-    if action === -1
-      # Terminate on any char
-      break
-    end
-
+    action = $stdin.gets.chomp.to_i - 1
+    break if action === -1
+    
     unless legal_moves[action]
       puts '🔴Invalid move!'
       next
     end
   else
-    neutral_state = tictactoe.change_perspective(state, player)
+    neutral_state = game.change_perspective(state, player)
     mcts_probs = mcts.search(neutral_state)
-    # ? Only choosing the last action
-    # ! Bug in calculating probs
     action = mcts_probs.find_index(mcts_probs.max)
+    sleep(0.1) if mode === "computer"
   end
-
-  state = tictactoe.get_next_state(state, action, player)
-  winner, is_gameover = tictactoe.check_gameover(state, action)
+  
+  state = game.get_next_state(state, action, player)
+  value, is_gameover = game.check_gameover(state, action)
+  system('clear')
   if is_gameover
-    # TODO: Display game over state
-    title = case player
-            when 1
-              "#{p1_avatar} Wins! 🎉"
-            when -1
-              "#{p2_avatar} Wins! 🎉"
-            else
-              '🤝 Draw!'
-            end
-    tictactoe.print_board(state, title, p1_avatar, p2_avatar)
-    state = tictactoe.get_initial_state
+    match_no += 1
+    if player == 1
+      p1_score += value
+    else 
+      p2_score += value
+    end
+    game.print_board(state, P1, P2, p1_score, p2_score, match_no)
+    if mode === "vsai"
+      if value === 0 
+        puts "Draw! 🤝"
+      else
+        puts player === 1 ? "You win! 🎉" : "You lose! 😜"
+      end
+    sleep(0.5)
+    end
+    sleep(0.3)
+    system('clear')
+    state = game.get_initial_state
   end
-  player = tictactoe.get_opponent(player)
+  
+  game.print_board(state, P1, P2, p1_score, p2_score, match_no)
+  player = game.get_opponent(player)
 end

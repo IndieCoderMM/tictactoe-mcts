@@ -14,10 +14,6 @@ class Node
     @value_sum = 0
   end
 
-  def to_s 
-    "Node: #{@action_taken}" 
-  end
-
   def is_fully_expanded
     @children.length.positive? && !@expandable_moves.include?(true)
   end
@@ -34,7 +30,7 @@ class Node
     # puts(best_ucb)
     @children.each do |child|
       ucb = get_ucb(child)
-      print ucb 
+
       if ucb > best_ucb
         best_ucb = ucb
         best_child = child
@@ -50,7 +46,6 @@ class Node
 
   def expand
     action = choose_random_move(@expandable_moves)
-    # * Removing move from list
     @expandable_moves[action] = false
     # puts("Action:", action)
     child_state = @game.clone_state(@state)

@@ -75,8 +75,9 @@ class TicTacToe
     end
   end
 
-  def print_board(state, title, p1, p2)
+  def print_board(state, p1, p2, p1_score, p2_score, match_no)
     board_width = 9 * @cols
+    title = "#{p1} : #{p1_score} | [#{match_no}] |  #{p2_score} : #{p2} "
     puts 
     state.each_with_index do |row, r|
       if r === 0
