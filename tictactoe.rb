@@ -51,7 +51,7 @@ class TicTacToe
     # if there's win condition
     # get value from action 
     if check_win(state, action)
-      return get_winner(state, action), true
+      return 1, true
     end
     # * Draw if no legal move
     unless get_legal_moves(state).any?
@@ -60,7 +60,13 @@ class TicTacToe
     return 0, false
   end
 
-  def get_opponent(player) = -player
+  def get_opponent(player) 
+    -player
+  end 
+
+  def clone_state(state)
+    state.map { |r| r.map(&:clone) }
+  end
 
   def change_perspective(state, player)
     state_ = state.map {|r| r.map(&:clone)}
