@@ -5,8 +5,9 @@ require './mcts'
 options = {}
 
 parser = OptionParser.new do |parser|
-  parser.on("-m", "--mode MODE", "Choose Mode (vsai, computer)")
-  parser.on("-l", "--level AI_LEVEL", "Choose AI level (1..1000)")
+  parser.on("-m", "--mode MODE", "Choose mode (vsai, computer) Def:vsai")
+  parser.on("-l", "--level AI_LEVEL", "Choose AI level (1..10) Def:10")
+  parser.on("-z", "--size BOARD_SIZE", "Change board size (>=3) Def:3")
 
   parser.on("-h", "--help", "Prints this help") do
     puts parser 
@@ -22,15 +23,17 @@ p1_score = 0
 p2_score = 0
 match_no = 1
 mode = options[:mode] || 'vsai'
-level = options[:level]&.to_i || 1000
-level = [1, level, 1000].sort[1]
+level = options[:level]&.to_i || 10
+size = options[:size]&.to_i || 3
+level = [1, level, 10].sort[1]
+size = [3, size, 6].sort[1]
 
 
-game = TicTacToe.new
+game = TicTacToe.new(size)
 state = game.get_initial_state
 player = 1
 
-args = { C: 1.41, num_searches: level }
+args = { C: 1.41, num_searches: level * 100 }
 mcts = MCTS.new(game, args)
 
 game.print_board(state, P1, P2, p1_score, p2_score, match_no)
@@ -64,6 +67,7 @@ loop do
     else 
       p2_score += value
     end
+    puts "ENGINE_LEVEL[#{level}] | MODE[#{mode === "vsai" ? "Vs AI" : "Simulation"}]"
     game.print_board(state, P1, P2, p1_score, p2_score, match_no)
     if mode === "vsai"
       if value === 0 
@@ -71,13 +75,13 @@ loop do
       else
         puts player === 1 ? "You win! 🎉" : "You lose! 😜"
       end
-    sleep(0.5)
+    sleep(0.3)
     end
     sleep(0.3)
     system('clear')
     state = game.get_initial_state
   end
-  
+  puts "ENGINE_LEVEL[#{level}] | MODE[#{mode === "vsai" ? "Vs AI" : "Simulation"}]"
   game.print_board(state, P1, P2, p1_score, p2_score, match_no)
   player = game.get_opponent(player)
 end

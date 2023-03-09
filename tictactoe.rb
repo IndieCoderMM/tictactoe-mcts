@@ -1,9 +1,9 @@
 class TicTacToe
   attr_reader :action_size
 
-  def initialize
-    @rows = 3
-    @cols = 3
+  def initialize(size=3)
+    @rows = size 
+    @cols = size 
     @action_size = @rows * @cols
   end
 
@@ -25,6 +25,22 @@ class TicTacToe
     state.flatten.reject.with_index { !indices.include? _2}
   end
 
+  def is_diag_connected(state, player)
+    left_diag = []
+    right_diag = []
+    i = 0
+    j = @cols - 1
+    (@cols).times do 
+      left_diag.push(i)
+      right_diag.push(j)
+      i += @cols + 1
+      j += @cols - 1
+    end 
+    is_rdiag_connected = get_diagonals(state, right_diag).sum === player * @cols
+    is_ldiag_connected = get_diagonals(state, left_diag).sum === player * @cols 
+    return is_ldiag_connected || is_rdiag_connected
+  end
+
   def get_row_col(action)
     return action / @cols, action % @cols
   end
@@ -34,11 +50,8 @@ class TicTacToe
     row, col = get_row_col(action)
     player = state[row][col]
     is_row_connected = state[row].sum === player * @rows 
-    is_col_connected = state.transpose[col].sum === player * @cols
-    # TODO Check diagonals 
-    is_ldiag_connected = get_diagonals(state, [0, 4, 8]).sum === player * @cols 
-    is_rdiag_connected = get_diagonals(state, [2, 4, 6]).sum === player * @cols
-    return is_row_connected || is_col_connected || is_ldiag_connected || is_rdiag_connected
+    is_col_connected = state.transpose[col].sum === player * @cols    
+    return is_row_connected || is_col_connected || is_diag_connected(state, player)
   end 
 
   def get_winner(state, action)
