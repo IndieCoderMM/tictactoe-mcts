@@ -22,9 +22,8 @@ This tree search can be used with reinforcement learning to improve AI decision 
 
 ## 📸 Screenshots
 
-| | |
-|:---:|:---:|
 | Player vs AI | AI vs AI Simulation |
+|:---:|:---:|
 |![VsAIDemo](demo_vsai.gif)|![Simulation](demo_sim.gif)|
 
 
